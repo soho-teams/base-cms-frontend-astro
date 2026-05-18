@@ -1,0 +1,44 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import Section from "~/components/Section.astro";
+import ServiceCard from "~/components/ServiceCard.astro";
+import ProjectCard from "~/components/ProjectCard.astro";
+import PostCard from "~/components/PostCard.astro";
+import { api } from "~/lib/api";
+
+const settings = await api.siteSettings();
+const services = (await api.services()).results.slice(0, 6);
+const featuredProjects = (await api.projects({ featured: true })).results.slice(0, 6);
+const recentPosts = (await api.posts()).results.slice(0, 3);
+---
+<BaseLayout>
+  <Hero
+    title={settings.tagline || `Welcome to ${settings.site_name}`}
+    tagline="A modern digital agency template powered by Base CMS. Pages, blog, services, and projects — all editable from the admin panel."
+  />
+
+  {services.length > 0 && (
+    <Section eyebrow="What we do" title="Services" description="Everything we offer, managed from the CMS.">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {services.map((service) => <ServiceCard service={service} />)}
+      </div>
+    </Section>
+  )}
+
+  {featuredProjects.length > 0 && (
+    <Section class="bg-slate-50" eyebrow="Selected work" title="Featured projects" description="A few of our recent engagements.">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {featuredProjects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </Section>
+  )}
+
+  {recentPosts.length > 0 && (
+    <Section eyebrow="Insights" title="From the blog">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        {recentPosts.map((post) => <PostCard post={post} />)}
+      </div>
+    </Section>
+  )}
+</BaseLayout>

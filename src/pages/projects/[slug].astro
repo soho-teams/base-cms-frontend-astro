@@ -1,0 +1,63 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Container from "~/components/Container.astro";
+import { api, assetUrl } from "~/lib/api";
+
+export async function getStaticPaths() {
+  const result = await api.projects();
+  return result.results.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const project = await api.project(slug!);
+const heroUrl = assetUrl(project.hero_image, "large");
+---
+<BaseLayout title={project.title} description={project.short_description}>
+  <article class="py-16">
+    <Container class="max-w-4xl">
+      <div class="flex flex-wrap items-center gap-3 text-sm text-slate-500 mb-4">
+        {project.category && <span>{project.category.name}</span>}
+        {project.year && <><span>·</span><span>{project.year}</span></>}
+        {project.client_name && <><span>·</span><span>{project.client_name}</span></>}
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 mb-6 leading-tight">{project.title}</h1>
+      {project.short_description && <p class="text-xl text-slate-600 leading-relaxed mb-8">{project.short_description}</p>}
+      {heroUrl && <img src={heroUrl} alt={project.title} class="w-full rounded-2xl mb-10" />}
+
+      {project.tech_stack_list.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-10">
+          {project.tech_stack_list.map((tech) => (
+            <span class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded-full">{tech}</span>
+          ))}
+        </div>
+      )}
+
+      <div class="prose-cms" set:html={project.body}></div>
+
+      {project.gallery.length > 0 && (
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12">
+          {project.gallery.map((img) => (
+            <img src={assetUrl(img, "large")} alt={img.alt_text || ""} class="w-full rounded-xl" />
+          ))}
+        </div>
+      )}
+
+      {(project.live_url || project.github_url) && (
+        <div class="flex flex-wrap gap-3 mt-12 pt-8 border-t border-slate-100">
+          {project.live_url && (
+            <a href={project.live_url} target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white font-semibold rounded-lg hover:bg-slate-700 transition">
+              Visit site →
+            </a>
+          )}
+          {project.github_url && (
+            <a href={project.github_url} target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-200 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition">
+              View on GitHub
+            </a>
+          )}
+        </div>
+      )}
+    </Container>
+  </article>
+</BaseLayout>

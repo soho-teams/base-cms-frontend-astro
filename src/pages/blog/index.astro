@@ -1,0 +1,18 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Section from "~/components/Section.astro";
+import PostCard from "~/components/PostCard.astro";
+import { api } from "~/lib/api";
+const posts = (await api.posts()).results;
+---
+<BaseLayout title="Blog">
+  <Section eyebrow="Blog" title="Insights and updates">
+    {posts.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {posts.map((post) => <PostCard post={post} />)}
+      </div>
+    ) : (
+      <p class="text-slate-500">No posts yet. Create one in your CMS to see it here.</p>
+    )}
+  </Section>
+</BaseLayout>

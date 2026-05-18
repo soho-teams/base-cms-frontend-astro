@@ -1,0 +1,28 @@
+---
+import type { SiteSettings } from "~/lib/types";
+interface Props {
+  settings: SiteSettings;
+}
+const { settings } = Astro.props;
+const year = new Date().getFullYear();
+const social = settings.social_links || {};
+---
+<footer class="border-t border-slate-100 mt-20 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <div>
+      <p class="font-semibold text-slate-900">{settings.site_name}</p>
+      {settings.tagline && <p class="text-sm text-slate-500 mt-1">{settings.tagline}</p>}
+    </div>
+    <div class="flex items-center gap-4 text-sm text-slate-500">
+      {Object.entries(social).map(([key, url]) => (
+        <a href={url as string} class="hover:text-slate-900 transition capitalize">{key}</a>
+      ))}
+      {settings.contact_email && (
+        <a href={`mailto:${settings.contact_email}`} class="hover:text-slate-900 transition">{settings.contact_email}</a>
+      )}
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 text-xs text-slate-400">
+    © {year} {settings.site_name}. Built with Astro + Base CMS.
+  </div>
+</footer>

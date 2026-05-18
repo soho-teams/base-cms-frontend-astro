@@ -1,0 +1,21 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Section from "~/components/Section.astro";
+import { api } from "~/lib/api";
+const settings = await api.siteSettings();
+---
+<BaseLayout title="Contact">
+  <Section eyebrow="Let's talk" title="Get in touch">
+    <div class="max-w-2xl">
+      <p class="text-lg text-slate-600 mb-6">
+        Reach out — we'd love to hear about your project.
+      </p>
+      {settings.contact_email && (
+        <a href={`mailto:${settings.contact_email}`}
+           class="inline-flex items-center gap-3 text-lg font-semibold text-brand-700 hover:text-brand-900 transition">
+          ✉ {settings.contact_email}
+        </a>
+      )}
+    </div>
+  </Section>
+</BaseLayout>

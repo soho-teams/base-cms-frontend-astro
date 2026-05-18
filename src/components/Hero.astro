@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+  tagline?: string;
+}
+const { title, tagline } = Astro.props;
+---
+<section class="relative overflow-hidden bg-gradient-to-br from-brand-50 via-white to-pink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+    <div class="max-w-3xl">
+      <p class="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 bg-brand-100 rounded-full px-3 py-1 mb-6">
+        <span class="w-1.5 h-1.5 bg-brand-500 rounded-full animate-pulse"></span>
+        Built with Base CMS
+      </p>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">{title}</h1>
+      {tagline && <p class="text-xl text-slate-600 leading-relaxed mb-8 max-w-2xl">{tagline}</p>}
+      <div class="flex flex-wrap gap-3">
+        <a href="/services" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white font-semibold rounded-lg hover:bg-slate-700 transition shadow-lg">
+          Our services
+        </a>
+        <a href="/projects" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-slate-900 font-semibold rounded-lg border border-slate-200 hover:bg-slate-50 transition">
+          See our work
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

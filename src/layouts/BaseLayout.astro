@@ -1,0 +1,49 @@
+---
+import "../styles/global.css";
+import Header from "~/components/Header.astro";
+import Footer from "~/components/Footer.astro";
+import { api, assetUrl } from "~/lib/api";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string | null;
+}
+
+const { title, description, image } = Astro.props;
+const settings = await api.siteSettings();
+const menuItems = await api.menuItems();
+
+const pageTitle = title
+  ? `${title} — ${settings.site_name}`
+  : settings.default_seo_title || settings.site_name;
+const pageDescription = description || settings.default_seo_description || settings.tagline;
+const faviconUrl = assetUrl(settings.favicon, "small");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    {image && <meta property="og:image" content={image} />}
+    {faviconUrl && <link rel="icon" href={faviconUrl} />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-white text-slate-900 antialiased font-sans">
+    <Header settings={settings} menuItems={menuItems} />
+    <main>
+      <slot />
+    </main>
+    <Footer settings={settings} />
+  </body>
+</html>

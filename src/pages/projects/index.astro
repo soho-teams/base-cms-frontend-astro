@@ -1,0 +1,18 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Section from "~/components/Section.astro";
+import ProjectCard from "~/components/ProjectCard.astro";
+import { api } from "~/lib/api";
+const projects = (await api.projects()).results;
+---
+<BaseLayout title="Projects">
+  <Section eyebrow="Portfolio" title="Selected projects">
+    {projects.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        {projects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    ) : (
+      <p class="text-slate-500">No projects yet. Add some in your CMS.</p>
+    )}
+  </Section>
+</BaseLayout>

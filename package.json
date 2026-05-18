@@ -1,0 +1,18 @@
+{
+  "name": "base-cms-frontend-astro",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Astro frontend starter for Base CMS — agency template (Pages, Blog, Services, Projects)",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "tailwindcss": "^3.4.0"
+  }
+}

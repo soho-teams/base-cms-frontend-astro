@@ -1,0 +1,19 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Section from "~/components/Section.astro";
+import { api } from "~/lib/api";
+
+const settings = await api.siteSettings();
+---
+<BaseLayout title="About">
+  <Section eyebrow="About us" title={`We are ${settings.site_name}`}>
+    <div class="prose-cms max-w-3xl">
+      <p>{settings.tagline || "A modern digital agency."}</p>
+      <p>
+        This page is a static example. To make it dynamic, create a Page with slug
+        <code>about</code> in your CMS and load it via <code>api.page("about")</code> in
+        <code>pages/[slug].astro</code> or right here.
+      </p>
+    </div>
+  </Section>
+</BaseLayout>

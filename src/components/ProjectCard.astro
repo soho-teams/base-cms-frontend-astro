@@ -1,0 +1,25 @@
+---
+import type { ProjectList } from "~/lib/types";
+import { assetUrl } from "~/lib/api";
+interface Props { project: ProjectList; }
+const { project } = Astro.props;
+const heroUrl = assetUrl(project.hero_image, "large");
+---
+<a href={`/projects/${project.slug}`} class="group block">
+  <div class="aspect-[4/3] bg-slate-100 rounded-2xl overflow-hidden mb-4">
+    {heroUrl ? (
+      <img src={heroUrl} alt={project.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+    ) : (
+      <div class="w-full h-full flex items-center justify-center text-slate-300 text-5xl font-bold">
+        {project.title.charAt(0)}
+      </div>
+    )}
+  </div>
+  <div class="flex items-center gap-2 text-xs text-slate-500 mb-2">
+    {project.category && <span>{project.category.name}</span>}
+    {project.year && <span>·</span>}
+    {project.year && <span>{project.year}</span>}
+  </div>
+  <h3 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition">{project.title}</h3>
+  {project.client_name && <p class="text-sm text-slate-500 mt-1">{project.client_name}</p>}
+</a>

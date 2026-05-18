@@ -1,0 +1,29 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Container from "~/components/Container.astro";
+import { api, assetUrl } from "~/lib/api";
+
+export async function getStaticPaths() {
+  const result = await api.services();
+  return result.results.map((s) => ({ params: { slug: s.slug } }));
+}
+
+const { slug } = Astro.params;
+const service = await api.service(slug!);
+const heroUrl = assetUrl(service.featured_image, "large");
+---
+<BaseLayout title={service.name} description={service.short_description}>
+  <article class="py-16">
+    <Container class="max-w-3xl">
+      <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">{service.name}</h1>
+      {service.short_description && <p class="text-xl text-slate-600 leading-relaxed mb-8">{service.short_description}</p>}
+      {heroUrl && <img src={heroUrl} alt={service.name} class="w-full rounded-2xl mb-10" />}
+      {service.price_range && (
+        <p class="inline-flex items-center gap-2 px-4 py-2 bg-brand-50 text-brand-700 font-semibold rounded-lg mb-8">
+          {service.price_range}
+        </p>
+      )}
+      <div class="prose-cms" set:html={service.description}></div>
+    </Container>
+  </article>
+</BaseLayout>

@@ -1,0 +1,23 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Container from "~/components/Container.astro";
+import { api, assetUrl } from "~/lib/api";
+
+export async function getStaticPaths() {
+  const result = await api.pages();
+  return result.results.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const page = await api.page(slug!);
+const heroUrl = assetUrl(page.featured_image, "large");
+---
+<BaseLayout title={page.title} description={page.seo_description}>
+  <article class="py-16">
+    <Container class="max-w-3xl">
+      <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 mb-6">{page.title}</h1>
+      {heroUrl && <img src={heroUrl} alt={page.title} class="w-full rounded-2xl mb-10" />}
+      <div class="prose-cms" set:html={page.body}></div>
+    </Container>
+  </article>
+</BaseLayout>

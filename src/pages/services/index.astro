@@ -1,0 +1,18 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Section from "~/components/Section.astro";
+import ServiceCard from "~/components/ServiceCard.astro";
+import { api } from "~/lib/api";
+const services = (await api.services()).results;
+---
+<BaseLayout title="Services">
+  <Section eyebrow="Services" title="What we offer">
+    {services.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {services.map((service) => <ServiceCard service={service} />)}
+      </div>
+    ) : (
+      <p class="text-slate-500">No services yet. Add some in your CMS.</p>
+    )}
+  </Section>
+</BaseLayout>
