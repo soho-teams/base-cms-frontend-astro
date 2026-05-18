@@ -27,8 +27,10 @@ export interface SiteSettings {
 export interface MenuItem {
   id: number;
   label: string;
-  url: string;
+  resolved_url: string;
+  link_type: string;
   order: number;
+  open_in_new_tab: boolean;
   children?: MenuItem[];
 }
 

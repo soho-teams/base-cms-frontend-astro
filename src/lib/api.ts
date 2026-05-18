@@ -47,8 +47,10 @@ export const api = {
       social_links: {},
     }),
 
-  menuItems: (slug = "main") =>
-    safeGet<MenuItem[]>(`/menus/${slug}/items/`, []),
+  menuItems: async (slug = "main"): Promise<MenuItem[]> => {
+    const menu = await safeGet<{ items: MenuItem[] }>(`/menus/${slug}/`, { items: [] });
+    return menu.items ?? [];
+  },
 
   pages: () => safeGet<Paginated<PageList>>("/pages/", { count: 0, next: null, previous: null, results: [] }),
   page: (slug: string) => get<PageDetail>(`/pages/${slug}/`),
@@ -69,15 +71,16 @@ export const api = {
   project: (slug: string) => get<ProjectDetail>(`/projects/${slug}/`),
 };
 
-/** Get the best thumbnail URL from an asset, falling back to file_url. */
-export function assetUrl(asset: Asset | null | undefined, size: "small" | "medium" | "large" = "medium"): string | null {
-  if (!asset) return null;
-  return asset.thumbnails_urls?.[size] ?? asset.file_url ?? null;
-}
-
-/** Absolute URL for relative asset paths (CMS sometimes returns /media/...). */
+/** Absolute URL for relative paths (CMS returns /media/... which is relative to the API server). */
 export function absoluteUrl(path: string | null | undefined): string | null {
   if (!path) return null;
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
   return `${API_URL}${path}`;
+}
+
+/** Get the best thumbnail URL from an asset as an absolute URL, falling back to file_url. */
+export function assetUrl(asset: Asset | null | undefined, size: "small" | "medium" | "large" = "medium"): string | null {
+  if (!asset) return null;
+  const path = asset.thumbnails_urls?.[size] ?? asset.file_url ?? null;
+  return absoluteUrl(path);
 }

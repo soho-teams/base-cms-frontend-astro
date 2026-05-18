@@ -25,7 +25,16 @@ const logoUrl = assetUrl(settings.logo, "medium");
       <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
         {menuItems.length > 0 ? (
           menuItems.map((item) => (
-            <li><a href={item.url} class="hover:text-slate-900 transition">{item.label}</a></li>
+            <li>
+              <a
+                href={item.resolved_url}
+                target={item.open_in_new_tab ? "_blank" : undefined}
+                rel={item.open_in_new_tab ? "noopener noreferrer" : undefined}
+                class="hover:text-slate-900 transition"
+              >
+                {item.label}
+              </a>
+            </li>
           ))
         ) : (
           <>
