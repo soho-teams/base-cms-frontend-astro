@@ -11,8 +11,19 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const project = await api.project(slug!);
 const heroUrl = assetUrl(project.hero_image, "large");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: project.title,
+  description: project.short_description,
+  image: heroUrl ? [heroUrl] : undefined,
+  dateCreated: project.year ? `${project.year}-01-01` : undefined,
+  creator: project.client_name ? { "@type": "Organization", name: project.client_name } : undefined,
+  url: project.live_url || undefined,
+};
 ---
-<BaseLayout title={project.title} description={project.short_description}>
+<BaseLayout title={project.title} description={project.short_description} image={heroUrl} jsonLd={jsonLd}>
   <article class="py-16">
     <Container class="max-w-4xl">
       <div class="flex flex-wrap items-center gap-3 text-sm text-slate-500 mb-4">

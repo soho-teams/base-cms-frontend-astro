@@ -11,8 +11,17 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const service = await api.service(slug!);
 const heroUrl = assetUrl(service.featured_image, "large");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: service.name,
+  description: service.short_description,
+  image: heroUrl ? [heroUrl] : undefined,
+  offers: service.price_range ? { "@type": "Offer", description: service.price_range } : undefined,
+};
 ---
-<BaseLayout title={service.name} description={service.short_description}>
+<BaseLayout title={service.name} description={service.short_description} image={heroUrl} jsonLd={jsonLd}>
   <article class="py-16">
     <Container class="max-w-3xl">
       <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">{service.name}</h1>

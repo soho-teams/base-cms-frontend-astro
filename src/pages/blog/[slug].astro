@@ -12,8 +12,21 @@ const { slug } = Astro.params;
 const post = await api.post(slug!);
 const heroUrl = assetUrl(post.featured_image, "large");
 const date = post.published_at ? new Date(post.published_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
+
+const SITE = import.meta.env.PUBLIC_SITE_URL || "";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.title,
+  description: post.excerpt,
+  datePublished: post.published_at,
+  dateModified: post.published_at,
+  image: heroUrl ? [heroUrl] : undefined,
+  author: { "@type": "Person", name: "Author" },
+  mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}/blog/${post.slug}` },
+};
 ---
-<BaseLayout title={post.title} description={post.excerpt}>
+<BaseLayout title={post.title} description={post.excerpt} image={heroUrl} ogType="article" jsonLd={jsonLd}>
   <article class="py-16">
     <Container class="max-w-3xl">
       <p class="text-sm text-slate-500 mb-3">{date}</p>

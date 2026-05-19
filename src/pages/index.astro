@@ -11,8 +11,16 @@ const settings = await api.siteSettings();
 const services = (await api.services()).results.slice(0, 6);
 const featuredProjects = (await api.projects({ featured: true })).results.slice(0, 6);
 const recentPosts = (await api.posts()).results.slice(0, 3);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: settings.site_name,
+  description: settings.tagline,
+  url: import.meta.env.PUBLIC_SITE_URL || "",
+};
 ---
-<BaseLayout>
+<BaseLayout jsonLd={jsonLd}>
   <Hero
     title={settings.tagline || `Welcome to ${settings.site_name}`}
     tagline="A modern digital agency template powered by Base CMS. Pages, blog, services, and projects — all editable from the admin panel."

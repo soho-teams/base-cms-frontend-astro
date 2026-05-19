@@ -81,6 +81,26 @@ All endpoints are fetched at build time → fully static output, no API calls at
 - **Fonts:** swap the Google Fonts `<link>` in `BaseLayout.astro` and update `fontFamily` in Tailwind config
 - **Layout:** all reusable bits live in `src/components/` and `src/layouts/`
 
+## SEO
+
+The starter ships with production-ready SEO baked in:
+
+- **Sitemap** — `GET /sitemap.xml` is generated at build time and includes the home page, blog/services/projects index pages, contact, and every Page/Post/Service/Project pulled from the CMS.
+- **Robots** — `GET /robots.txt` allows all crawlers and points at the sitemap.
+- **Canonical + OG + Twitter cards** — every page rendered through `BaseLayout` emits `<link rel="canonical">`, full Open Graph tags (`og:type`, `og:url`, `og:site_name`, `og:locale`, `og:image`), and Twitter card tags (`summary` / `summary_large_image`).
+- **JSON-LD** — detail pages include schema.org structured data:
+  - `BlogPosting` on `/blog/[slug]`
+  - `CreativeWork` on `/projects/[slug]`
+  - `Service` on `/services/[slug]`
+  - `WebSite` on `/` (home)
+
+Set `PUBLIC_SITE_URL` in your environment (e.g. `https://www.mysite.com`) so canonicals and the sitemap emit absolute URLs. This is also picked up by `astro.config.mjs` as the `site` value.
+
+```bash
+# .env
+PUBLIC_SITE_URL=https://www.mysite.com
+```
+
 ## Deployment
 
 Build outputs static files in `dist/`. Deploy to:

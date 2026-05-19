@@ -8,9 +8,12 @@ interface Props {
   title?: string;
   description?: string;
   image?: string | null;
+  ogType?: "website" | "article";
+  jsonLd?: object | null;
+  canonicalPath?: string;
 }
 
-const { title, description, image } = Astro.props;
+const { title, description, image, ogType, jsonLd, canonicalPath } = Astro.props;
 const settings = await api.siteSettings();
 const menuItems = await api.menuItems();
 
@@ -19,6 +22,10 @@ const pageTitle = title
   : settings.default_seo_title || settings.site_name;
 const pageDescription = description || settings.default_seo_description || settings.tagline;
 const faviconUrl = assetUrl(settings.favicon, "small");
+
+const SITE = import.meta.env.PUBLIC_SITE_URL || "https://example.com";
+const canonical = `${SITE}${canonicalPath ?? Astro.url.pathname}`;
+const ogTypeFinal = ogType ?? "website";
 ---
 
 <!doctype html>
@@ -28,9 +35,23 @@ const faviconUrl = assetUrl(settings.favicon, "small");
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content={ogTypeFinal} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={settings.site_name} />
+    <meta property="og:locale" content="en_US" />
     {image && <meta property="og:image" content={image} />}
+
+    <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    {image && <meta name="twitter:image" content={image} />}
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
     {faviconUrl && <link rel="icon" href={faviconUrl} />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
