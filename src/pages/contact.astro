@@ -1,0 +1,66 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Container from "~/components/Container.astro";
+import ContactForm from "~/components/ContactForm.astro";
+import { api } from "~/lib/api";
+
+const settings = await api.siteSettings();
+const social = settings.social_links || {};
+---
+
+<BaseLayout title="Contact" description={`Get in touch with ${settings.site_name}`}>
+  <section class="py-20">
+    <Container class="max-w-5xl">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <!-- Left: intro + contact info -->
+        <div class="lg:col-span-2">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-600 mb-3">Get in touch</p>
+          <h1 class="text-4xl font-bold text-slate-900 mb-4 leading-tight">Let's talk about your project</h1>
+          <p class="text-lg text-slate-600 mb-8">
+            We'd love to hear what you're building. Send us a message and we'll get back to you within 1–2 business days.
+          </p>
+
+          <div class="space-y-4 text-sm">
+            {settings.contact_email && (
+              <div class="flex items-start gap-3">
+                <div class="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-brand-600">
+                    <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
+                    <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-slate-900">Email</p>
+                  <a href={`mailto:${settings.contact_email}`} class="text-slate-600 hover:text-brand-600 transition">{settings.contact_email}</a>
+                </div>
+              </div>
+            )}
+
+            {Object.keys(social).length > 0 && (
+              <div class="flex items-start gap-3">
+                <div class="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-brand-600">
+                    <path fill-rule="evenodd" d="M4.464 4.464A5 5 0 015 4h10a5 5 0 01.536.464l.464.464.464-.464A5 5 0 0117 4a5 5 0 015 5v10a5 5 0 01-5 5H5a5 5 0 01-5-5V9a5 5 0 01.464-2.072L4.464 4.464z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-slate-900">Follow us</p>
+                  <div class="flex gap-3 mt-1">
+                    {Object.entries(social).map(([key, url]) => (
+                      <a href={url as string} class="text-slate-600 hover:text-brand-600 transition capitalize" target="_blank" rel="noopener noreferrer">{key}</a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Right: form -->
+        <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-8 sm:p-10">
+          <ContactForm />
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>
